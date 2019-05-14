@@ -455,7 +455,8 @@ ProcessEvent(SDL_Event *event) {
 			event->key.keysym.sym,
 			event->key.keysym.mod,
 			0/*event->key.keysym.unicode*/);
-		ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t), default_id);
+		ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t), msg_id);
+		msg_id++;
 		}
 		if(savefp_keyts != NULL) {
 			gettimeofday(&tv, NULL);
@@ -498,7 +499,8 @@ ProcessEvent(SDL_Event *event) {
 			sdlmsg_mousekey(&m, 0, event->button.button,
 				xlat_mouseX(ch, event->button.x),
 				xlat_mouseY(ch, event->button.y));
-			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
+			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), msg_id);
+			msg_id++;
 		}
 		break;
 	case SDL_MOUSEBUTTONDOWN:
@@ -508,7 +510,8 @@ ProcessEvent(SDL_Event *event) {
 			sdlmsg_mousekey(&m, 1, event->button.button,
 				xlat_mouseX(ch, event->button.x),
 				xlat_mouseY(ch, event->button.y));
-			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
+			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), msg_id);
+			msg_id++;
 		}
 		break;
 	case SDL_MOUSEMOTION:
@@ -522,7 +525,8 @@ ProcessEvent(SDL_Event *event) {
 				xlat_mouseY(ch, event->motion.yrel),
 				event->motion.state,
 				relativeMouseMode == 0 ? 0 : 1);
-			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
+			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), msg_id);
+			msg_id++;
 		}
 		break;
 #if 1	// only support SDL2
