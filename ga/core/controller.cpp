@@ -320,8 +320,7 @@ ctrl_client_sendmsg(void *msg, int msglen, unsigned long id) {
 	if(ctrl_queue_write_msg(msg, msglen) != msglen) {
 		ga_error("controller client-sendmsg: queue full, message dropped.\n");
 	} else {
-		ga_error("Message with id: %s sent\n", id);
-		//msg_id++;
+		ga_error("Message with id: %lu sent\n", id);
 		pthread_cond_signal(&wakeup);
 	}
 	return;

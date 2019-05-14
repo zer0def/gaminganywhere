@@ -69,7 +69,7 @@ struct timeval watchdogTimer = {0LL, 0LL};
 static RTSPThreadParam rtspThreadParam;
 
 static unsigned long msg_id = 1;
-static const unsigned long default_id = 2;
+static const unsigned long default_id = 0;
 
 static int relativeMouseMode = 0;
 static int showCursor = 1;
@@ -479,7 +479,7 @@ ProcessEvent(SDL_Event *event) {
 			event->key.keysym.sym,
 			event->key.keysym.mod,
 			0/*event->key.keysym.unicode*/);
-		ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t), default_id);
+		ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t), msg_id);
 		msg_id++;
 		}
 		if(savefp_keyts != NULL) {
