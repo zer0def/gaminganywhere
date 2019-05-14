@@ -314,7 +314,7 @@ quit:
 	return NULL;
 }
 void
-ctrl_client_sendmsg(void *msg, int msglen) {
+ctrl_client_sendmsg(void *msg, int msglen, unsigned long id) {
 	if(ctrlenabled == false) {
 		ga_error("controller client-sendmsg: controller was disabled.\n");
 		return;
@@ -322,7 +322,7 @@ ctrl_client_sendmsg(void *msg, int msglen) {
 	if(ctrl_queue_write_msg(msg, msglen) != msglen) {
 		ga_error("controller client-sendmsg: queue full, message dropped.\n");
 	} else {
-		//ga_error("Message with id: %s sent\n", id);
+		ga_error("Message with id: %s sent\n", id);
 		//msg_id++;
 		pthread_cond_signal(&wakeup);
 	}

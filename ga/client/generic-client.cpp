@@ -198,7 +198,7 @@ ga_client_send_key(bool pressed, int scancode, int sym, int mod, int unicode) {
 	if(g_conf == NULL || g_conf->ctrlenable == 0)
 		return -1;
 	sdlmsg_keyboard(&m, pressed ? 0 : 1, scancode, sym, mod, unicode);
-	ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t));
+	ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t),0);
 	return 0;
 }
 
@@ -208,7 +208,7 @@ ga_client_send_mouse_button(bool pressed, int button, int x, int y) {
 	if(g_conf == NULL || g_conf->ctrlenable == 0)
 		return -1;
 	sdlmsg_mousekey(&m, pressed ? 0 : 1, button, x, y);
-	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t));
+	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), 0);
 	return 0;
 }
 
@@ -218,7 +218,7 @@ ga_client_send_mouse_motion(int x, int y, int xrel, int yrel, int state, bool re
 	if(g_conf == NULL || g_conf->ctrlenable == 0)
 		return -1;
 	sdlmsg_mousemotion(&m, x, y, xrel, yrel, state, relative ? 0 : 1);
-	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t));
+	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t),0);
 	return 0;
 }
 
@@ -228,7 +228,7 @@ ga_client_send_mouse_wheel(int dx, int dy) {
 	if(g_conf == NULL || g_conf->ctrlenable == 0)
 		return -1;
 	sdlmsg_mousewheel(&m, dx, dy);
-	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t));
+	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t),0);
 	return 0;
 }
 
@@ -279,7 +279,7 @@ ga_client_start() {
 	if(rtspThreadParam.url != NULL)
 		free((void*) rtspThreadParam.url);
 	//
-	ctrl_client_sendmsg(NULL, 0);
+	ctrl_client_sendmsg(NULL, 0, 0);
 	ga_client_cleanup();
 	//
 	return 0;
@@ -288,7 +288,7 @@ ga_client_start() {
 int
 ga_client_stop() {
 	//
-	ctrl_client_sendmsg(NULL, 0);
+	ctrl_client_sendmsg(NULL, 0, 0);
 	rtspThreadParam.running = false;
 	rtspThreadParam.quitLive555 = 1;
 	bzero(&ctrlthread, sizeof(ctrlthread));
