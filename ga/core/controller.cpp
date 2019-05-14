@@ -50,8 +50,6 @@ static unsigned char *qbuffer = NULL;
 
 static msgfunc replay = NULL;
 
-static long msg_id = 0;
-
 #ifdef WIN32
 static unsigned long
 #else
@@ -517,7 +515,7 @@ tcp_again:
 }
 
 int
-ctrl_server_readnext(void *msg, int msglen) {
+ctrl_server_readnext(void *msg, int msglen, unsigned long id) {
 	int ret;
 	struct queuemsg *qm;
 again:
@@ -528,6 +526,7 @@ again:
 			bcopy(qm->msg, msg, qm->msgsize);
 			ret = qm->msgsize;
 		}
+		ga_error("Here is the id read: %s\n", id);
 		ctrl_queue_release_msg(qm);
 		return ret;
 	}

@@ -69,6 +69,7 @@ struct timeval watchdogTimer = {0LL, 0LL};
 static RTSPThreadParam rtspThreadParam;
 
 static unsigned long msg_id = 1;
+static const unsigned long default_id = 2;
 
 static int relativeMouseMode = 0;
 static int showCursor = 1;
@@ -454,7 +455,7 @@ ProcessEvent(SDL_Event *event) {
 			event->key.keysym.sym,
 			event->key.keysym.mod,
 			0/*event->key.keysym.unicode*/);
-		ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t), 0);
+		ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t), default_id);
 		}
 		if(savefp_keyts != NULL) {
 			gettimeofday(&tv, NULL);
@@ -478,7 +479,7 @@ ProcessEvent(SDL_Event *event) {
 			event->key.keysym.sym,
 			event->key.keysym.mod,
 			0/*event->key.keysym.unicode*/);
-		ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t), 0);
+		ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t), default_id);
 		msg_id++;
 		}
 		if(savefp_keyts != NULL) {
@@ -497,7 +498,7 @@ ProcessEvent(SDL_Event *event) {
 			sdlmsg_mousekey(&m, 0, event->button.button,
 				xlat_mouseX(ch, event->button.x),
 				xlat_mouseY(ch, event->button.y));
-			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), 0);
+			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
 		}
 		break;
 	case SDL_MOUSEBUTTONDOWN:
@@ -507,7 +508,7 @@ ProcessEvent(SDL_Event *event) {
 			sdlmsg_mousekey(&m, 1, event->button.button,
 				xlat_mouseX(ch, event->button.x),
 				xlat_mouseY(ch, event->button.y));
-			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), 0);
+			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
 		}
 		break;
 	case SDL_MOUSEMOTION:
@@ -521,14 +522,14 @@ ProcessEvent(SDL_Event *event) {
 				xlat_mouseY(ch, event->motion.yrel),
 				event->motion.state,
 				relativeMouseMode == 0 ? 0 : 1);
-			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), 0);
+			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
 		}
 		break;
 #if 1	// only support SDL2
 	case SDL_MOUSEWHEEL:
 		if(rtspconf->ctrlenable && rtspconf->sendmousemotion) {
 			sdlmsg_mousewheel(&m, event->motion.x, event->motion.y);
-			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), 0);
+			ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
 		}
 		break;
 #ifdef ANDROID
@@ -545,10 +546,10 @@ ProcessEvent(SDL_Event *event) {
 		mapx = (unsigned short) (1.0 * (nativeSizeX[0]-1) * event->tfinger.x / 32767.0);
 		mapy = (unsigned short) (1.0 * (nativeSizeY[0]-1) * event->tfinger.y / 32767.0);
 		sdlmsg_mousemotion(&m, mapx, mapy, 0, 0, 0, 0);
-		ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), 0);
+		ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
 		//
 		sdlmsg_mousekey(&m, 1, SDL_BUTTON_LEFT, mapx, mapy);
-		ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), 0);
+		ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
 		}
 		break;
 	case SDL_FINGERUP:
@@ -561,10 +562,10 @@ ProcessEvent(SDL_Event *event) {
 		mapx = (unsigned short) (1.0 * (nativeSizeX[0]-1) * event->tfinger.x / 32767.0);
 		mapy = (unsigned short) (1.0 * (nativeSizeY[0]-1) * event->tfinger.y / 32767.0);
 		sdlmsg_mousemotion(&m, mapx, mapy, 0, 0, 0, 0);
-		ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), 0);
+		ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
 		//
 		sdlmsg_mousekey(&m, 0, SDL_BUTTON_LEFT, mapx, mapy);
-		ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), 0);
+		ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
 		}
 		break;
 	case SDL_FINGERMOTION:
@@ -577,7 +578,7 @@ ProcessEvent(SDL_Event *event) {
 		mapx = (unsigned short) (1.0 * (nativeSizeX[0]-1) * event->tfinger.x / 32767.0);
 		mapy = (unsigned short) (1.0 * (nativeSizeY[0]-1) * event->tfinger.y / 32767.0);
 		sdlmsg_mousemotion(&m, mapx, mapy, 0, 0, 0, 0);
-		ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), 0);
+		ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), default_id);
 		}
 		break;
 #undef	DEBUG_FINGER
