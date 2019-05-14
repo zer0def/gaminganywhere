@@ -526,7 +526,7 @@ again:
 			bcopy(qm->msg, msg, qm->msgsize);
 			ret = qm->msgsize;
 		}
-		ga_error("Here is the id read: %s\n", id);
+		//ga_error("Here is the id read: %s\n", id);
 		ctrl_queue_release_msg(qm);
 		return ret;
 	}
