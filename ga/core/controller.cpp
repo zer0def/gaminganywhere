@@ -21,6 +21,7 @@
 #include <errno.h>
 #include <string.h>
 #include <pthread.h>
+#include <typeinfo>
 #ifndef WIN32
 #include <strings.h>
 #include <unistd.h>
@@ -48,6 +49,8 @@ static int qhead, qtail, qsize, qunit;
 static unsigned char *qbuffer = NULL;
 
 static msgfunc replay = NULL;
+
+static long msg_id = 0;
 
 #ifdef WIN32
 static unsigned long
@@ -290,6 +293,7 @@ ctrl_client_thread(void *rtspconf) {
 			} else if(conf->ctrlproto == IPPROTO_UDP) {
 				if((wlen = sendto(ctrlsocket, (char*) qm->msg, qm->msgsize, 0, (struct sockaddr*) &ctrlsin, sizeof(ctrlsin))) < 0) {
 					ga_error("controller client-send(udp): %s\n", strerror(errno));
+
 #ifdef ANDROID
 					drop = 1;
 #else
@@ -309,7 +313,6 @@ quit:
 
 	return NULL;
 }
-
 void
 ctrl_client_sendmsg(void *msg, int msglen) {
 	if(ctrlenabled == false) {
@@ -319,6 +322,8 @@ ctrl_client_sendmsg(void *msg, int msglen) {
 	if(ctrl_queue_write_msg(msg, msglen) != msglen) {
 		ga_error("controller client-sendmsg: queue full, message dropped.\n");
 	} else {
+		//ga_error("Message with id: %s sent\n", id);
+		//msg_id++;
 		pthread_cond_signal(&wakeup);
 	}
 	return;
