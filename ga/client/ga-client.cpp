@@ -643,54 +643,53 @@ ProcessEvent(SDL_Event *event) {
 
 static void *
 watchdog_thread(void *args) {
-	//static char idlemsg[128];
-	//struct timeval tv;
-	//SDL_Event evt;
+	static char idlemsg[128];
+	struct timeval tv;
+	SDL_Event evt;
 	//
-	//rtsperror("watchdog: launched, waiting for audio/video frames ...\n");
+	rtsperror("watchdog: launched, waiting for audio/video frames ...\n");
 	//
-	//while(true) {
-//#ifdef WIN32
-		//Sleep(1000);
-//#else
-		//sleep(1);
-//#endif
-		//pthread_mutex_lock(&watchdogMutex);
-		//gettimeofday(&tv, NULL);
-		//if(watchdogTimer.tv_sec != 0) {
-			//long long d;
-			//d = tvdiff_us(&tv, &watchdogTimer);
-			//if(d > IDLE_MAXIMUM_THRESHOLD) {
-			//	rtspThreadParam.running = false;
-			//	break;
-			//} else if(d > IDLE_DETECTION_THRESHOLD) {
+	while(true) {
+#ifdef WIN32
+		Sleep(1000);
+#else
+		sleep(1);
+#endif
+		pthread_mutex_lock(&watchdogMutex);
+		gettimeofday(&tv, NULL);
+		if(watchdogTimer.tv_sec != 0) {
+			long long d;
+			d = tvdiff_us(&tv, &watchdogTimer);
+			if(d > IDLE_MAXIMUM_THRESHOLD) {
+				rtspThreadParam.running = false;
+				break;
+			} else if(d > IDLE_DETECTION_THRESHOLD) {
 				// update message and show
-			//	snprintf(idlemsg, sizeof(idlemsg),
-			//		"Audio/video stall detected, waiting for %d second(s) to terminate ...",
-			//		(int) (IDLE_MAXIMUM_THRESHOLD - d) / 1000000);
+				snprintf(idlemsg, sizeof(idlemsg),
+					"Audio/video stall detected, waiting for %d second(s) to terminate ...",
+					(int) (IDLE_MAXIMUM_THRESHOLD - d) / 1000000);
 				//
-			//	bzero(&evt, sizeof(evt));
-			//	evt.user.type = SDL_USEREVENT;
-			//	evt.user.timestamp = time(0);
-			//	evt.user.code = SDL_USEREVENT_RENDER_TEXT;
-			//	evt.user.data1 = idlemsg;
-			//	evt.user.data2 = NULL;
-			//	SDL_PushEvent(&evt);
+				bzero(&evt, sizeof(evt));
+				evt.user.type = SDL_USEREVENT;
+				evt.user.timestamp = time(0);
+				evt.user.code = SDL_USEREVENT_RENDER_TEXT;
+				evt.user.data1 = idlemsg;
+				evt.user.data2 = NULL;
+				SDL_PushEvent(&evt);
 				//
-			//	rtsperror("watchdog: %s\n", idlemsg);
-			//} else {
+				rtsperror("watchdog: %s\n", idlemsg);
+			} else {
 				// do nothing
-			//}
-		//} else {
-		//	rtsperror("watchdog: initialized, but no frames received ...\n");
-		//}
-		//pthread_mutex_unlock(&watchdogMutex);
-	//}
+			}
+		} else {
+			rtsperror("watchdog: initialized, but no frames received ...\n");
+		}
+		pthread_mutex_unlock(&watchdogMutex);
+	}
 	//
-	//rtsperror("watchdog: terminated.\n");
-	//exit(-1);
+	rtsperror("watchdog: terminated.\n");
+	exit(-1);
 	//
-	rtsperror("Watchdog disabled");
 	return NULL;
 }
 
@@ -792,7 +791,7 @@ main(int argc, char *argv[]) {
 	} while(0);
 	// launch watchdog
 	pthread_mutex_init(&watchdogMutex, NULL);
-	if(ga_conf_readbool("enable-watchdog", 1) == 1) {
+	if(ga_conf_readbool("enable-watchdog", 1) == 10) {
 		if(pthread_create(&watchdog, NULL, watchdog_thread, NULL) != 0) {
 			rtsperror("Cannot create watchdog thread.\n");
 			return -1;
