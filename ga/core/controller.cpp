@@ -313,7 +313,7 @@ quit:
 	return NULL;
 }
 void
-ctrl_client_sendmsg(void *msg, int msglen, unsigned long id) {
+ctrl_client_sendmsg(void *msg, int msglen) {
 	if(ctrlenabled == false) {
 		ga_error("controller client-sendmsg: controller was disabled.\n");
 		return;
@@ -321,7 +321,6 @@ ctrl_client_sendmsg(void *msg, int msglen, unsigned long id) {
 	if(ctrl_queue_write_msg(msg, msglen) != msglen) {
 		ga_error("controller client-sendmsg: queue full, message dropped.\n");
 	} else {
-		ga_error("Message with id: %lu sent\n", id);
 		pthread_cond_signal(&wakeup);
 	}
 	return;
@@ -515,7 +514,7 @@ tcp_again:
 }
 
 int
-ctrl_server_readnext(void *msg, int msglen, unsigned long id) {
+ctrl_server_readnext(void *msg, int msglen) {
 	int ret;
 	struct queuemsg *qm;
 again:

@@ -1,0 +1,3 @@
+H264-report: 1019KB rcvd; pkt-loss=0/767,0.00%; bitrate=272Kbps; jitter=2613 (freq=90000Hz) || QOS reported on 2019-05-17 18:23:48.000 
+H264-report: 1023KB rcvd; pkt-loss=0/781,0.00%; bitrate=273Kbps; jitter=1048 (freq=90000Hz) || QOS reported on 2019-05-17 18:26:57.000 
+H264-report: 882KB rcvd; pkt-loss=0/681,0.00%; bitrate=235Kbps; jitter=484 (freq=90000Hz) || QOS reported on 2019-05-17 18:27:27.000 

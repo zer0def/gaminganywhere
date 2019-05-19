@@ -601,7 +601,7 @@ bandwidth_estimator_update(unsigned int ssrc, unsigned short seq, struct timeval
 					mi->second.pktloss,
 					mi->second.bytesRcvd,
 					cbw);
-				ctrl_client_sendmsg(&m, sizeof(ctrlmsg_system_netreport_t),0);
+				ctrl_client_sendmsg(&m, sizeof(ctrlmsg_system_netreport_t));
 				//
 				bzero(&mi->second, sizeof(bwe_record_t));
 				mi->second.initTime = rcvtv;

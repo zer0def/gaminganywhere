@@ -18,11 +18,16 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
+#include <fstream>
+#include <iostream> 
 
 #include "ga-common.h"
 #include "vsource.h"
 #include "rtspclient.h"
 #include "qosreport.h"
+
+using namespace std;
 
 #define	Q_MAX		(VIDEO_SOURCE_CHANNEL_MAX+1)
 
@@ -35,11 +40,17 @@ static struct timeval qos_tv;
 
 static void qos_schedule();
 
+static ofstream report_file;
+
 static void
 qos_report(void *clientData) {
 	int i;
 	struct timeval now;
+	time_t current = time(0);
 	long long elapsed;
+	char time_buff[40];
+	char report_buff[256];	
+	report_file.open("/home/ubuntu/myprog/gaminganywhere/ga/QOS_Report.txt", ios::app);
 	//
 	gettimeofday(&now, NULL);
 	elapsed = tvdiff_us(&now, &qos_tv);
@@ -60,21 +71,38 @@ qos_report(void *clientData) {
 		dExp = pkts_expected - qrec[i].pkts_expected;
 		dRcvd = pkts_received - qrec[i].pkts_received;
 		dKB = KB_received - qrec[i].KB_received;
+		//time
+		strftime (time_buff, 100, "%Y-%m-%d %H:%M:%S.000", localtime (&current));
 		// show info
-		ga_error("%s-report: %.0fKB rcvd; pkt-loss=%d/%d,%.2f%%; bitrate=%.0fKbps; jitter=%u (freq=%uHz)\n",
+		ga_error("%s-report: %.0fKB rcvd; pkt-loss=%d/%d,%.2f%%; bitrate=%.0fKbps; jitter=%u (freq=%uHz) || QOS reported on %s \n",
 			//now.tv_sec, now.tv_usec,
 			qrec[i].prefix, dKB, dExp-dRcvd, dExp, 100.0*(dExp-dRcvd)/dExp,
 			8000000.0*dKB/elapsed,
 			stats->jitter(),
-			qrec[i].rtpsrc->timestampFrequency());
+			qrec[i].rtpsrc->timestampFrequency(),
+			time_buff
+			);
+		if(report_file.is_open()) {
+			int r = sprintf(report_buff, "%s-report: %.0fKB rcvd; pkt-loss=%d/%d,%.2f%%; bitrate=%.0fKbps; jitter=%u (freq=%uHz) || QOS reported on %s \n",
+                        //now.tv_sec, now.tv_usec,
+                        qrec[i].prefix, dKB, dExp-dRcvd, dExp, 100.0*(dExp-dRcvd)/dExp,
+                        8000000.0*dKB/elapsed,
+                        stats->jitter(),
+                        qrec[i].rtpsrc->timestampFrequency(),
+                        time_buff );
+			report_file << report_buff;
+					
+		}
 		//
 		qrec[i].pkts_expected = pkts_expected;
 		qrec[i].pkts_received = pkts_received;
 		qrec[i].KB_received = KB_received;
 	}
 	// schedule next qos
+	
 	qos_tv = now;
 	qos_schedule();
+	report_file.close();
 	return;
 }
 
@@ -83,7 +111,7 @@ qos_schedule() {
 	struct timeval now, timeout;
 	timeout.tv_sec = qos_tv.tv_sec;
 	timeout.tv_usec = qos_tv.tv_usec + QOS_INTERVAL_MS * 1000;
-	timeout.tv_sec += (timeout.tv_usec / 1000000);
+	timeout.tv_sec += (timeout.tv_usec / 1000000); 
 	timeout.tv_usec %= 1000000;
 	gettimeofday(&now, NULL);
 	qos_task = env->taskScheduler().scheduleDelayedTask(

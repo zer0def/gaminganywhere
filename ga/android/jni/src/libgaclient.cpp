@@ -739,7 +739,7 @@ Java_org_gaminganywhere_gaclient_GAClient_sendKeyEvent(
 	if(g_conf == NULL || g_conf->ctrlenable == 0)
 		return;
 	sdlmsg_keyboard(&m, pressed == JNI_FALSE ? 0 : 1, scancode, sym, mod, unicode);
-	ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t), 0);
+	ctrl_client_sendmsg(&m, sizeof(sdlmsg_keyboard_t));
 	return;
 }
 
@@ -751,7 +751,7 @@ Java_org_gaminganywhere_gaclient_GAClient_sendMouseKey(
 	if(g_conf == NULL || g_conf->ctrlenable == 0)
 		return;
 	sdlmsg_mousekey(&m, pressed == JNI_FALSE ? 0 : 1, button, x, y);
-	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t),0);
+	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t));
 	return;
 }
 
@@ -763,7 +763,7 @@ Java_org_gaminganywhere_gaclient_GAClient_sendMouseMotion(
 	if(g_conf == NULL || g_conf->ctrlenable == 0)
 		return;
 	sdlmsg_mousemotion(&m, x, y, xrel, yrel, state, relative == JNI_FALSE ? 0 : 1);
-	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t),0);
+	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t));
 	return;
 }
 
@@ -775,7 +775,7 @@ Java_org_gaminganywhere_gaclient_GAClient_sendMouseWheel(
 	if(g_conf == NULL || g_conf->ctrlenable == 0)
 		return;
 	sdlmsg_mousewheel(&m, dx, dy);
-	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t), 0);
+	ctrl_client_sendmsg(&m, sizeof(sdlmsg_mouse_t));
 	return;
 }
 
@@ -802,7 +802,7 @@ launch_controller_client(JNIEnv *env) {
 static void
 disconnect(JNIEnv *env) {
 	//
-	ctrl_client_sendmsg(NULL, 0,0);
+	ctrl_client_sendmsg(NULL, 0);
 	rtspThreadParam.running = false;
 	rtspThreadParam.quitLive555 = 1;
 	bzero(&ctrlthread, sizeof(ctrlthread));
@@ -919,7 +919,7 @@ Java_org_gaminganywhere_gaclient_GAClient_rtspConnect(
 	if(rtspThreadParam.url != NULL)
 		free((void*) rtspThreadParam.url);
 	//
-	ctrl_client_sendmsg(NULL, 0,0);
+	ctrl_client_sendmsg(NULL, 0);
 	rtspConnect_cleanup(env);
 	//
 	return JNI_TRUE;
