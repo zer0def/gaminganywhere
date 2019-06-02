@@ -139,7 +139,8 @@ xlat_mouseY(int ch, int y) {
 
 static void
 create_overlay(struct RTSPThreadParam *rtspParam, int ch) {
-	int w, h;
+	int w, h;	
+	ga_error("Beginning of create overlay ch= %d \n", ch);
 	AVPixelFormat format;
 #if 1	// only support SDL2
 	unsigned int renderer_flags = 0;
@@ -791,7 +792,7 @@ main(int argc, char *argv[]) {
 	} while(0);
 	// launch watchdog
 	pthread_mutex_init(&watchdogMutex, NULL);
-	if(ga_conf_readbool("enable-watchdog", 1) == 10) {
+	if(ga_conf_readbool("enable-watchdog", 1) == 1) {
 		if(pthread_create(&watchdog, NULL, watchdog_thread, NULL) != 0) {
 			rtsperror("Cannot create watchdog thread.\n");
 			return -1;

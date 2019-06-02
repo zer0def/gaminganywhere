@@ -67,7 +67,7 @@ using namespace std;
 #endif
 
 /** The gloabl log file name */
-static char *ga_logfile = NULL;
+static char *ga_logfile = "/home/ubuntu/myprog/gaminganywhere/game_logs.txt";
 
 /**
  * Compute the time difference for two \a timeval data structure, i.e.,
