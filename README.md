@@ -1,3 +1,11 @@
+Instructions to install on Ubuntu 16.04 64 bit as well as build on AWS:
+
+https://docs.google.com/document/d/1JowhYqvHkMWeSucpug2J0BWuIOU0GrFswb6UHV1UUbs/edit?usp=sharing
+by Darsh Lin
+
+(will find a better way to publish it in the future, for now it's on a Google Doc)
+
+
 GamingAnywhere
 ==============
 
