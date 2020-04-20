@@ -46,7 +46,7 @@ osx_brew:
 
 linux_ubuntu:
 	@echo 'You will need root permissions to install packages'
-	sudo apt-get install libsdl2-dev libsdl2-ttf-dev yasm \
+	sudo apt-get install -y libsdl2-dev libsdl2-ttf-dev yasm \
 			libmp3lame-dev libopus-dev libogg-dev \
 			libvorbis-dev libtheora-dev \
 			libvpx-dev libx264-dev libxvidcore-dev
