@@ -1,6 +1,6 @@
 #!/bin/sh
 GA_OS=`uname -s`
-export GADEPS=$(PWD)/deps.posix
+export GADEPS=$(pwd)/deps.posix
 case $GA_OS in
 MSYS*)
 	export PKG_CONFIG_PATH=/mingw64/lib/pkgconfig
@@ -10,3 +10,4 @@ MSYS*)
 	;;
 esac
 export PATH=$GADEPS/bin:$PATH
+export LD_LIBRARY_PATH=$GADEPS/deps.posix/lib/lib/:$LD_LIBRARY_PATH

@@ -27,12 +27,12 @@ ifeq ($(SYSTEM),Linux)
 ###### Ubuntu?
 LINUXDIST	= $(shell grep '=Ubuntu' /etc/lsb-release | awk -F= '{print $$2}')
 ifeq ($(LINUXDIST),Ubuntu)
-PACKAGES	= linux_ubuntu x265 ffmpeg live555
+PACKAGES	= linux_ubuntu x264 vpx x265 ffmpeg live555
 endif
 endif
 
-TBZUNPACK	= tar xjf
-TGZUNPACK	= tar xzf
+TBZUNPACK	= tar xf
+TGZUNPACK	= tar xf
 
 include Makefile.packages
 
@@ -57,7 +57,7 @@ sdl2:
 	cd $(SDL2DIR)/mybuild; ../configure --prefix=$(GADEPS) --with-pic
 	make -C $(SDL2DIR)/mybuild $(PARALLEL_MAKE)
 	make -C $(SDL2DIR)/mybuild install
-	rm -rf $(SDL2DIR)
+	# rm -rf$(SDL2DIR)
 
 sdl2_ttf:
 	$(TGZUNPACK) $(SDL2_TTF)
@@ -65,21 +65,21 @@ sdl2_ttf:
 	cd $(SDL2_TTFDIR)/mybuild; ../configure --prefix=$(GADEPS) --with-pic
 	make -C $(SDL2_TTFDIR)/mybuild $(PARALLEL_MAKE)
 	make -C $(SDL2_TTFDIR)/mybuild install
-	rm -rf $(SDL2_TTFDIR)
+	# rm -rf$(SDL2_TTFDIR)
 
 yasm:
 	$(TGZUNPACK) $(YASM)
 	cd $(YASMDIR); ./configure --prefix=$(GADEPS)
 	make -C $(YASMDIR) $(PARALLEL_MAKE)
 	make -C $(YASMDIR) install
-	rm -rf $(YASMDIR)
+	# rm -rf$(YASMDIR)
 
 lame:
 	$(TGZUNPACK) $(LAME)
 	cd $(LAMEDIR); ./configure --prefix=$(GADEPS) --with-pic
 	make -C $(LAMEDIR) $(PARALLEL_MAKE)
 	make -C $(LAMEDIR) install
-	rm -rf $(LAMEDIR)
+	# rm -rf$(LAMEDIR)
 
 opus:
 	$(TGZUNPACK) $(OPUS)
@@ -87,21 +87,21 @@ opus:
 	cd $(OPUSDIR); ./configure --prefix=$(GADEPS) --with-pic
 	make -C $(OPUSDIR) $(PARALLEL_MAKE)
 	make -C $(OPUSDIR) install
-	rm -rf $(OPUSDIR)
+	# rm -rf$(OPUSDIR)
 
 ogg:
 	$(TGZUNPACK) $(OGG)
 	cd $(OGGDIR); ./configure --prefix=$(GADEPS) --with-pic
 	make -C $(OGGDIR) $(PARALLEL_MAKE)
 	make -C $(OGGDIR) install
-	rm -rf $(OGGDIR)
+	# rm -rf$(OGGDIR)
 
 vorbis:
 	$(TGZUNPACK) $(VORBIS)
 	cd $(VORBISDIR); ./configure --prefix=$(GADEPS) --build=$(MACHINE) --with-pic
 	make -C $(VORBISDIR) $(PARALLEL_MAKE)
 	make -C $(VORBISDIR) install
-	rm -rf $(VORBISDIR)
+	# rm -rf$(VORBISDIR)
 
 theora:
 	$(TBZUNPACK) $(THEORA)
@@ -109,14 +109,14 @@ theora:
 	cd $(THEORADIR); ./configure --prefix=$(GADEPS) --with-pic --disable-examples
 	make -C $(THEORADIR) $(PARALLEL_MAKE)
 	make -C $(THEORADIR) install
-	rm -rf $(THEORADIR)
+	# rm -rf$(THEORADIR)
 
 vpx:
 	$(TBZUNPACK) $(VPX)
 	cd $(VPXDIR); ./configure --prefix=$(GADEPS) $(VPX_EXTRA_CONFIG) --enable-pic
 	make -C $(VPXDIR) $(PARALLEL_MAKE)
 	make -C $(VPXDIR) install
-	rm -rf $(VPXDIR)
+	# rm -rf$(VPXDIR)
 
 x264:
 	$(TBZUNPACK) $(X264)
@@ -124,7 +124,7 @@ x264:
 	cd $(X264DIR); ./configure --prefix=$(GADEPS) --enable-shared --enable-pic
 	make -C $(X264DIR) $(PARALLEL_MAKE)
 	make -C $(X264DIR) install
-	rm -rf $(X264DIR)
+	# rm -rf$(X264DIR)
 
 x265:
 	$(TGZUNPACK) $(X265)
@@ -134,16 +134,18 @@ x265:
 		../../source/
 	make -C $(X265DIR)/build/linux $(PARALLEL_MAKE)
 	make -C $(X265DIR)/build/linux install
-	rm -rf $(X265DIR)
+	# rm -rf$(X265DIR)
 
 xvid:
 	$(TBZUNPACK) $(XVID)
 	cd $(XVIDDIR)/build/generic; ./configure --prefix=$(GADEPS)
 	make -C $(XVIDDIR)/build/generic $(PARALLEL_MAKE)
 	make -C $(XVIDDIR)/build/generic install
-	rm -rf $(XVIDDIR)
+	# rm -rf$(XVIDDIR)
 
-ffmpeg:
+ffmpeg: sdl2 sdl2_ttf yasm lame opus ogg vorbis theora vpx  x264 x265 xvid
+	# --enable-cuda --enable-cuvid --enable-nvenc --enable-nonfree --enable-libnpp \
+
 	$(TBZUNPACK) $(FFMPEG)
 	cd $(FFMPEGDIR); ./configure --prefix=$(GADEPS) \
 		--enable-shared --enable-pic \
@@ -154,11 +156,11 @@ ffmpeg:
 		--enable-libopus \
 		--enable-libxvid \
 		--enable-gpl --enable-nonfree --disable-outdev=sdl \
-		--extra-cflags=-I$(GADEPS)/include \
-		--extra-ldflags=-L$(GADEPS)/lib
+		--extra-cflags="-I$(GADEPS)/include -I/usr/local/cuda/include" \
+		--extra-ldflags="-L$(GADEPS)/lib -L/usr/local/cuda/lib64"
 	make -C $(FFMPEGDIR) $(PARALLEL_MAKE)
 	make -C $(FFMPEGDIR) install
-	rm -rf $(FFMPEGDIR)
+	# rm -rf$(FFMPEGDIR)
 
 live555:
 	$(TGZUNPACK) $(LIVE555)
@@ -168,7 +170,7 @@ live555:
 	cat $(LIVE555DIR)/config.linux.old | sed -e 's,^COMPILE_OPTS.*$$,& -fPIC,' > $(LIVE555DIR)/config.linux
 	cat $(LIVE555DIR)/config.macosx.old | sed -e 's,^COMPILE_OPTS.*$$,& -fPIC,' > $(LIVE555DIR)/config.macosx
 	# need to apply the 4MB buffer patch?
-	cd $(LIVE555DIR); cat ../patches/live555-* | patch -p1 
+	cd $(LIVE555DIR); cat ../patches/live555-* | patch -p1
 	#
 	cd $(LIVE555DIR); ./genMakefiles $(shell uname -s | tr A-Z a-z | sed -e 's,darwin,macosx,' -e 's,cygwin.*,cygwin,')
 	make -C $(LIVE555DIR) $(PARALLEL_MAKE)
@@ -177,5 +179,4 @@ live555:
 	-mkdir -p $(GADEPS)/include/live555
 	find $(LIVE555DIR) -name '*.hh' -exec cp -f {} $(GADEPS)/include/live555 \;
 	cp -f $(LIVE555DIR)/groupsock/include/NetCommon.h $(GADEPS)/include/live555
-	rm -rf $(LIVE555DIR)
-
+	# rm -rf$(LIVE555DIR)

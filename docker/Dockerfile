@@ -23,21 +23,23 @@ RUN	echo "#!/bin/bash\n\n\
 	cd /root/gaminganywhere ;\
 	. ./env-setup ;\
 	cd deps.src ;\
-	ls -l ;\
-	make -j $(grep MHz /proc/cpuinfo  | wc -l);\
+	make -j $(grep MHz /proc/cpuinfo  | wc -l) GADEPS=/root/gaminganywhere/deps.posix/lib  ;\
 	chmod 777 /etc/ld.so.conf ;\
 	export LD_LIBRARY_PATH='/root/gaminganywhere/deps.posix/lib' ;\
 	echo '/root/gaminganywhere/deps.posix/lib' >> /etc/ld.so.conf ;\
 	ldconfig ;\
 " > /root/make.sh
 
-RUN	echo -e "\n\n\
+
+RUN	echo "\n\n\
 	cd /root/gaminganywhere/ga ;\
+	export LD_LIBRARY_PATH='/root/gaminganywhere/deps.posix/lib' ;\
 	make all -j $(grep MHz /proc/cpuinfo  | wc -l) ;\
 	make install ;\
 " >> /root/make.sh
 
 RUN chmod a+x /root/make.sh
+RUN cat /root/make.sh
 
 USER root
 CMD [ "/root/make.sh" ]
