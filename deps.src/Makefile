@@ -1,5 +1,5 @@
 
-GADEPS		?= $(HOME)/myprog/gaminganywhere/deps.posix
+GADEPS		?= $(HOME)/gaminganywhere/deps.posix
 MACHINE		?= $(shell uname -m)
 USE_SYSTEM_PACKAGES ?= 0
 PARALLEL_MAKE	?= -j5
