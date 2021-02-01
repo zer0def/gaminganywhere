@@ -5,9 +5,6 @@ SYSTEM		= $(shell uname -s)
 PARALLEL_MAKE	= -j5
 PACKAGES	= live555
 
-TBZUNPACK	= tar xjf
-TGZUNPACK	= tar xzf
-
 include Makefile.packages
 
 all: ubuntu_pkgs $(PACKAGES)
@@ -20,7 +17,6 @@ ubuntu_pkgs:
 		libswresample-dev libswscale-dev ffmpeg
 
 live555:
-	$(TGZUNPACK) $(LIVE555)
 	# enable -fPIC
 	mv -f $(LIVE555DIR)/config.linux $(LIVE555DIR)/config.linux.old
 	cat $(LIVE555DIR)/config.linux.old | sed -e 's,^COMPILE_OPTS.*$$,& -fPIC,' > $(LIVE555DIR)/config.linux

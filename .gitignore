@@ -1,11 +1,3 @@
-# Dependencies need to be unzipped, but we don't commit them
-/bin
-/deps.src/*/
-/deps.win32
-/deps.win64
-/deps.posix*
-/deps.android-arm
-/deps.android-x86
 /do-release.sh
 /EXCLUDE
 /ga/core/deprecated

@@ -5,9 +5,6 @@ SYSTEM		= $(shell uname -s)
 PARALLEL_MAKE	= -j5
 PACKAGES	= live555
 
-TBZUNPACK	= tar xjf
-TGZUNPACK	= tar xzf
-
 include Makefile.packages
 
 all: brew_pkgs $(PACKAGES)
@@ -21,10 +18,7 @@ brew_pkgs:
 	brew install sdl2_ttf
 
 live555:
-	-$(TGZUNPACK) $(LIVE555)
-	# apply patches
 	cd $(LIVE555DIR); cat ../patches/live555-* | patch -p1 
-	#
 	cd $(LIVE555DIR); ./genMakefiles macosx
 	make -C $(LIVE555DIR) $(PARALLEL_MAKE)
 	-mkdir -p $(GADEPS)/lib
@@ -32,5 +26,4 @@ live555:
 	-mkdir -p $(GADEPS)/include/live555
 	find $(LIVE555DIR) -name '*.hh' -exec cp -f {} $(GADEPS)/include/live555 \;
 	cp -f $(LIVE555DIR)/groupsock/include/NetCommon.h $(GADEPS)/include/live555
-	rm -rf $(LIVE555DIR)
 
